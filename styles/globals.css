@@ -25,3 +25,11 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+.custom-img {
+  background-image: url('../public/cycm.jpg');
+}
