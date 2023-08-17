@@ -1,0 +1,8 @@
+version: "3"
+services:
+  cycm-next:
+    image: hicsail/cycm-next:staging
+    restart: always
+    ports:
+      - 3015:80
+ 
