@@ -4,5 +4,5 @@ services:
     image: hicsail/cycm-next:staging
     restart: always
     ports:
-      - 3015:80
+      - 3015:3000
  
