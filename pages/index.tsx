@@ -51,7 +51,7 @@ export default function Home() {
     <main
       className={`${nunito.className}`}
     >
-      <Hero heading="Center for Young Colorful Minds"/>
+      <Hero heading="Empowering Teens with Mental Health Resources"/>
       <Mission/>
       <CurrentState />
       <Slider sliderDataList={sliderDataList} />

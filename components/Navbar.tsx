@@ -1,80 +1,115 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false);
 
-  const [nav, setNav] = useState(false);
-  const [color, setColor] = useState('transparent');
-  const [textColor, setTextColor] = useState('white');
-
-  const handleNav = () => {
-    setNav(!nav);
-  };
+  const navigation = [
+    {
+      name: "About Us",
+      href: "#",
+    },
+    {
+      name: "Our Feed",
+      href: "#",
+    },
+    {
+      name: "Contact Us",
+      href: "#",
+    },
+  ];
 
   useEffect(() => {
-    const changeBackground = () => {
-      if (window.scrollY >= 80) {
-        setColor('black');
-        setTextColor('white');
-      } else {
-        setColor('transparent');
-        setTextColor('black');
-      }
-    }
-    window.addEventListener('scroll', changeBackground);
+    const closeDropdown = (e: MouseEvent) => {
+      if (open && !document.querySelector("#navbar-dropdown")?.contains(e.target as Node)) setOpen(false);
+    };
+
+    document.addEventListener("mousedown", closeDropdown);
+
     return () => {
-      window.removeEventListener('scroll', changeBackground);
-    }
-  }, []);
+      document.removeEventListener("mousedown", closeDropdown);
+    };
+  }, [open]);
 
   return (
-    <div style={{
-      backgroundColor: color,
-    }} className="fixed left-0 top-0 w-full z-10 ease-in duration-300">
-      <div className="max-w-[1240px] m-auto flex justify-between items-center p-4">
+    <nav className="fixed bg-white border-gray-200 top-0 w-full z-10">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link href="/">
           <h1 className="font-bold text-4xl">CYCM</h1>
         </Link>
-        <ul className="hidden sm:flex">
-          <li className="p-4">
-            <Link href="/#about">Mission</Link>
-          </li>
-          <li className="p-4">
-            <Link href="/studies">Studies</Link>
-          </li>
-          <li className="p-4">
-            <Link href="/contact">Contact</Link>
-          </li>
-        </ul>
-
-        {/* Mobile Button */}
-        <div className="block sm:hidden z-10">
-          {
-            nav ? (
-              <AiOutlineClose className="text-4xl" onClick={handleNav} />
-            ) : (
-              <AiOutlineMenu className="text-4xl" onClick={handleNav} />
-            )
-          }
-        </div>
-        {/* Mobile Menu */ }
-        <div className={nav ? "sm:hidden absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center w-full h-screen bg-black text-center ease-in duration-300"
-        : "sm:hidden absolute top-0 left-[-100%] right-0 bottom-0 flex justify-center items-center w-full h-screen bg-black text-center ease-in duration-300"}>
-          <ul>
-            <li className="p-4 text-4xl hover:text-gray-500">
-              <Link href="/#about">Mission</Link>
+        <div className="hidden w-full md:block md:w-auto" id="navbar-dropdown">
+          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white items-center">
+            {navigation.map((item) => (
+              <li key={item.name}>
+                <a
+                  href={item.href}
+                  className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                >
+                  {item.name}
+                </a>
+              </li>
+            ))}
+            <li>
+              <div className="relative inline-block text-left">
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(!open)}
+                    data-dropdown-toggle="dropdownNavbar"
+                    className="flex items-center justify-between w-full py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto"
+                  >
+                    Resources
+                    <svg
+                      className="w-2.5 h-2.5 ml-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                {open && (
+                  <div
+                    id="dropdownNavbar"
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="menu-button"
+                  >
+                    <div className="py-1" role="none">
+                      <a href="#" className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">
+                        item 0
+                      </a>
+                    </div>
+                    <div className="py-1" role="none">
+                      <a href="#" className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">
+                        item 1
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
             </li>
-            <li className="p-4 text-4xl hover:text-gray-500">
-              <Link href="/contact">Contact</Link>
-            </li>
-            <li className="p-4 text-4xl hover:text-gray-500">
-              <Link href="/mission">Mission</Link>
+            <li>
+              <button
+                type="button"
+                className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2 text-center"
+              >
+                Learn
+              </button>
             </li>
           </ul>
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
