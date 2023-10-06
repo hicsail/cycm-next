@@ -6,11 +6,34 @@ import Slider from '@/components/Slider';
 import Partners from '@/components/Partners';
 import Footer from '@/components/Footer';
 import CurrentState from '@/components/CurrentState';
+import Empower from '@/components/Empower';
+import ResourceCard from '@/components/ResourceCard';
+import Discover from '@/components/Discover';
 
 const inter = Inter({ subsets: ['latin'] });
 const nunito = Nunito({ subsets: ['latin'] });
 
 // flex min-h-screen flex-col items-center justify-between p-24
+const resources = [
+  {
+    title: "Explore Informative Articles on Mental Health",
+    description: "Find the support you need in our welcoming community.",
+    image: "/cycm-slider-1.png",
+    action: { text: "Learn More", link: "" },
+  },
+  {
+    title: "Connect with Others in a Supportive Community",
+    description: "Share your experiences and learn from others.",
+    image: "/cycm-slider-2.png",
+    action: { text: "Join Now", link: "" },
+  },
+  {
+    title: "Access a Variety of Mental Health Resources",
+    description: "Find articles, videos, and tools to support your mental well-being.",
+    image: "/cycm-slider-3.png",
+    action: { text: "Get Started", link: "" },
+  },
+];
 
 const sliderDataList = [
   {
@@ -48,14 +71,34 @@ const partnersDataList : Array<any> = [
 
 export default function Home() {
   return (
-    <main
-      className={`${nunito.className}`}
-    >
-      <Hero heading="Empowering Teens with Mental Health Resources"/>
-      <Mission/>
-      <CurrentState />
-      <Slider sliderDataList={sliderDataList} />
-      <Partners partners={partnersDataList}/>
+    <main className={`${nunito.className}`}>
+      <Hero heading="Empowering Teens with Mental Health Resources" />
+      <Empower
+        title="Supporting Teens Through Mental Health Awareness"
+        description="Discover helpful resources and articles to promote mental health awareness and support for teens. Together, we can create a safe and nurturing environment for their well-being."
+        source=""
+        image="/cycm-circle.jpg"
+      />
+      <div className="flex flex-col items-center my-16">
+        <h5 className="text-5xl font-bold font-sans mb-12 max-w-7xl px-12">
+          Discover Mental Health Resources for Teens
+        </h5>
+        <div className="flex flex-row max-w-7xl gap-10 px-12">
+          {resources.map((resource) => (
+            <ResourceCard
+              title={resource.title}
+              description={resource.description}
+              image={resource.image}
+              action={resource.action}
+            />
+          ))}
+        </div>
+      </div>
+      <Discover />
+      {/* <Mission/> */}
+      {/* <CurrentState /> */}
+      {/* <Slider sliderDataList={sliderDataList} /> */}
+      {/* <Partners partners={partnersDataList} /> */}
       <Footer />
     </main>
   )
