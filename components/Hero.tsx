@@ -6,7 +6,7 @@ interface Props {
 
 const Hero = ({ heading }: Props) => {
   return (
-    <div className="flex items-center justify-center h-screen mb-[48px] bg-fixed bg-center bg-cover custom-img">
+    <div className="flex items-center justify-center h-screen mb-16 bg-fixed bg-center bg-cover custom-img">
       {/* Overlay */}
       <div className="flex items-center w-full h-screen bg-black/50 z-[2]">
         {/* Content */}
