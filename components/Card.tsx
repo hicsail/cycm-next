@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AiFillPlayCircle, AiFillPauseCircle } from "react-icons/ai";
-import { TbProgress } from 'react-icons/tb';
+import { FaExpand } from 'react-icons/fa6';
 
 interface CardProps {
   title: string;
@@ -40,6 +40,7 @@ const Card: React.FC<CardProps> = ({ title, body, image, voiceId }) => {
   }, [audios]);
 
   const fetchAudio = async (sentence: string) => {
+
     const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
     
     if (!apiKey) {
@@ -69,7 +70,6 @@ const Card: React.FC<CardProps> = ({ title, body, image, voiceId }) => {
         console.error('Error response from server:', errorData);
         return null;
       }
-    
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       return new Audio(url);
@@ -110,7 +110,7 @@ const Card: React.FC<CardProps> = ({ title, body, image, voiceId }) => {
 
   return (
     <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition duration-300">
-      <img src={image} alt={title} className="object-cover w-full h-auto" />
+      <img src={image.length > 0 ? image : "/gray-background1.png"} alt={title} className="object-cover w-full h-auto" />
       <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-4 z-10">
         <h2 className="text-white text-xl font-semibold mb-2">{title}</h2>
         <p className="text-white transition-opacity duration-500 opacity-1">
@@ -120,14 +120,16 @@ const Card: React.FC<CardProps> = ({ title, body, image, voiceId }) => {
       <div className="absolute top-0 left-0 right-0 bg-transparent p-4 z-20">
         {
           isLoading ?
-            <TbProgress className="text-4xl" /> :
+            <p>
+              Loading audio...
+            </p> :
             (
               !isPaused ?
                 <AiFillPauseCircle
                   className="text-4xl"
                   onClick={handlePauseClick}
-                /> :
-
+                /> 
+                :
                 <AiFillPlayCircle
                   className="text-4xl"
                   onClick={handlePlayClick}

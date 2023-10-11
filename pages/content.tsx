@@ -12,7 +12,7 @@ const content = () => {
 
   useEffect(() => {
     // fetch from localhost:1337/api/articles
-    fetch("http://localhost:1337/api/articles", {
+    fetch("http://localhost:1337/api/articles?populate=*", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ const content = () => {
           }
         </select>
       </div>
-      <div className="flex justify-center h-90 mt-20">
+      <div className="flex flex-col sm:flex-row items-center justify-center h-90 mt-20">
         {articles &&
           articles.length > 0 &&
           articles.map((article: any) => (
@@ -66,7 +66,7 @@ const content = () => {
               <Card
                 title={article.attributes.title}
                 body={article.attributes.body}
-                image="https://images.unsplash.com/photo-1499856871958-5b9627545d1a"
+                image={article.attributes.header_image.data ? `http://localhost:1337${article.attributes.header_image.data[0].attributes.url}` : ""}
                 voiceId={selectedVoiceId}
               />
             </div>
