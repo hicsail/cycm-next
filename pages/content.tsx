@@ -8,7 +8,7 @@ const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
 const content = () => {
   const [articles, setArticles] = useState([]);
   const [voices, setVoices] = useState([]);
-  const [selectedVoiceId, setSelectedVoiceId] = useState('');
+  const [selectedVoiceId, setSelectedVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
 
   useEffect(() => {
     // fetch from localhost:1337/api/articles
