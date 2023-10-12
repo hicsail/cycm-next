@@ -10,9 +10,11 @@ const Hero = ({ heading }: Props) => {
       {/* Overlay */}
       <div className="flex items-center w-full h-screen bg-black/50 z-[2]">
         {/* Content */}
-        <div className="ml-[5%] p-5 text-white z[2] max-w-2xl">
-          <h1 className="text-7xl font-sans font-bold">{heading}</h1>
-          <p className="text-2xl mt-6">Discover a wealth of articles, tools, and support for teenage mental health.</p>
+        <div className="p-5 text-white z[2] max-w-2xl md:ml-[10%]">
+          <h1 className="text-5xl font-sans font-bold md:text-7xl">{heading}</h1>
+          <p className="text-xl mt-6 md:text-2xl">
+            Discover a wealth of articles, tools, and support for teenage mental health.
+          </p>
           <button className="px-8 py-2 border border mt-12">Learn More</button>
         </div>
       </div>
