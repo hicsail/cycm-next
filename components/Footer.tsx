@@ -9,11 +9,11 @@ const Footer = () => {
           <p className="text-md font-sans mb-4 md:mb-6 md:text-lg">
             Sign up for our newsletter to stay informed about new features and releases.
           </p>
-          <div className="flex grid grid-cols-4 gap-8 w-full mb-2">
+          <div className="flex grid gap-4 w-full mb-2 md:grid-cols-4 md:gap-8">
             <input
               type="text"
               id="email_subscription"
-              className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 md:col-span-3"
               placeholder="Enter your email address"
             />
             <button
@@ -90,19 +90,19 @@ const Footer = () => {
         </div>
       </div>
       <hr className="border-gray-800 w-[90%] my-4" />
-      <div className="flex mb-16 w-[90%]">
-        <h2 className="text-left">© 2023 All rights reserved</h2>
-        <div className="ml-auto">
-          <a className="mx-5 hover:underline" href="#">
+      <div className="flex flex-col mb-16 w-[90%] md:flex-row-reverse">
+        <div className="flex flex-col md:ml-auto md:flex-row">
+          <a className="mb-5 hover:underline md:mx-5 md:mb-0" href="#">
             Privacy Policy
           </a>
-          <a className="mx-5 hover:underline" href="#">
+          <a className="mb-5 hover:underline md:mx-5 md:mb-0" href="#">
             Terms of Service
           </a>
-          <a className="mx-5 hover:underline" href="#">
+          <a className="mb-5 hover:underline md:mx-5 md:mb-0" href="#">
             Cookies Settings
           </a>
         </div>
+        <h2 className="text-left">© 2023 All rights reserved</h2>
       </div>
     </div>
   );
