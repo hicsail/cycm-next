@@ -2,12 +2,36 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div className="flex flex-col items-center">
-      <div className="w-[90%] grid grid-cols-2 gap-16">
-        <div className="flex flex-col">
-          <h5 className="text-4xl font-bold font-sans items-start justify-items-start">CYCM</h5>
+    <div className="flex justify-center my-8">
+      <div className="p-8 max-w-7xl grid gap-8 md:gap-16 md:grid-cols-2 md:p-12">
+        <div className="flex flex-col items-start justify-center">
+          <h5 className="text-4xl font-bold mb-4 font-sans">CYCM</h5>
+          <p className="text-md font-sans mb-4 md:mb-6 md:text-lg">
+            Sign up for our newsletter to stay informed about new features and releases.
+          </p>
+          <div className="flex grid grid-cols-4 gap-8 w-full mb-2">
+            <input
+              type="text"
+              id="email_subscription"
+              className="col-span-3 bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+              placeholder="Enter your email address"
+            />
+            <button
+              type="button"
+              className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-md px-5 py-2.5 text-center"
+            >
+              Subscribe
+            </button>
+          </div>
+          <p className="text-md font-sans mb-4 md:mb-6 md:text-sm">
+            By subscribing, you agree to our{" "}
+            <a href="#" className="hover:underline">
+              Terms of Service
+            </a>{" "}
+            and consent to receive updates from our company.
+          </p>
         </div>
-        <div className="flex flex-row gap-32">
+        <div className="flex flex-col md:flex-row gap-32">
           <div>
             <h5 className="text-xl font-bold font-sans items-start justify-items-start mb-2">Column 1</h5>
           </div>
@@ -63,22 +87,6 @@ const Footer = () => {
               LinkedIn
             </a>
           </div>
-        </div>
-      </div>
-
-      <hr className="border-gray-800 w-[90%] my-4" />
-      <div className="flex mb-16 w-[90%]">
-        <h2 className="text-left">© 2023 All rights reserved</h2>
-        <div className="ml-auto">
-          <a className="mx-5 hover:underline" href="#">
-            Privacy Policy
-          </a>
-          <a className="mx-5 hover:underline" href="#">
-            Terms of Service
-          </a>
-          <a className="mx-5 hover:underline" href="#">
-            Cookies Settings
-          </a>
         </div>
       </div>
     </div>
