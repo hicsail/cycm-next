@@ -100,7 +100,7 @@ export default function Home() {
       {/* <CurrentState /> */}
       {/* <Slider sliderDataList={sliderDataList} /> */}
       {/* <Partners partners={partnersDataList} /> */}
-      <Footer />
+      {/* <Footer /> */}
     </main>
   );
 }

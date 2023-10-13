@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div className="flex justify-center my-8">
+    <div className="flex flex-col items-center mt-8">
       <div className="p-8 max-w-7xl grid gap-8 md:gap-16 md:grid-cols-2 md:p-12">
         <div className="flex flex-col items-start justify-center">
           <h5 className="text-4xl font-bold mb-4 font-sans">CYCM</h5>
@@ -87,6 +87,21 @@ const Footer = () => {
               LinkedIn
             </a>
           </div>
+        </div>
+      </div>
+      <hr className="border-gray-800 w-[90%] my-4" />
+      <div className="flex mb-16 w-[90%]">
+        <h2 className="text-left">© 2023 All rights reserved</h2>
+        <div className="ml-auto">
+          <a className="mx-5 hover:underline" href="#">
+            Privacy Policy
+          </a>
+          <a className="mx-5 hover:underline" href="#">
+            Terms of Service
+          </a>
+          <a className="mx-5 hover:underline" href="#">
+            Cookies Settings
+          </a>
         </div>
       </div>
     </div>
