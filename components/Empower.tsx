@@ -17,7 +17,7 @@ const Empower = ({ title, description, image }: EmpowerProps) => {
           <p className="text-md font-sans mb-4 md:mb-6 md:text-lg">{description}</p>
           <button
             type="button"
-            className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+            className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-md text-md px-5 py-2.5 text-center mr-2"
           >
             Learn More
           </button>
