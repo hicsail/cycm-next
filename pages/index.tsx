@@ -87,6 +87,7 @@ export default function Home() {
         <div className="flex max-w-7xl gap-10 px-8 flex-col md:px-12 md:flex-row">
           {resources.map((resource) => (
             <ResourceCard
+              key={resource.title}
               title={resource.title}
               description={resource.description}
               image={resource.image}
