@@ -9,8 +9,8 @@ interface ResourceCardProps {
 
 const ResourceCard = ({ title, description, image, action }: ResourceCardProps) => {
   return (
-    <div className="justify-items-center text-center">
-      <Image src={image} alt="CYCM Circle" width={400} height={240} />
+    <div className="text-center">
+      <img src={image} alt="CYCM Circle" style={{ maxHeight: "240px", width: "auto", display: "inline" }} />
       <h5 className="text-2xl font-bold font-sans my-2">{title}</h5>
       <p className="text-md font-sans my-2">{description}</p>
       <button
