@@ -9,6 +9,7 @@ const content = () => {
   const [articles, setArticles] = useState([]);
   const [voices, setVoices] = useState([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
+  const [isExpandedArray, setIsExpandedArray] = useState<any>([]);
 
   useEffect(() => {
     // fetch from localhost:1337/api/articles
@@ -23,6 +24,7 @@ const content = () => {
       .then((resp) => {
         console.log(resp.data)
         setArticles(resp.data);
+        setIsExpandedArray(new Array(resp.data.length).fill(false));
       });
 
     if (!apiKey) return;
@@ -44,9 +46,17 @@ const content = () => {
     setSelectedVoiceId(event.target.value);
   };
 
+  const handleExpandCard = (index: number) => {
+    setIsExpandedArray((prevArray: any) => {
+      const newArray = [...prevArray];
+      newArray[index] = !newArray[index];
+      return newArray;
+    });
+  };
+
   return (
     <div>
-      <div className="flex flex-column justify-center mt-20">
+      <div className="flex flex-column items-start justify-center mt-20">
         <select id="countries" onChange={handleVoiceChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           {voices.map((voice: any) => (
             <option key={voice.voice_id} value={voice.voice_id}>
@@ -58,20 +68,25 @@ const content = () => {
           }
         </select>
       </div>
-      <div className="flex flex-col sm:flex-row items-center justify-center h-90 mt-20">
-        {articles &&
-          articles.length > 0 &&
-          articles.map((article: any) => (
-            <div key={article.id} className="max-w-sm rounded overflow-hidden shadow-lgs m-5">
-              <Card
-                title={article.attributes.title}
-                body={article.attributes.body}
-                image={article.attributes.header_image.data ? `http://localhost:1337${article.attributes.header_image.data[0].attributes.url}` : ""}
-                voiceId={selectedVoiceId}
-              />
-            </div>
-          ))}
+      <div className="flex flex-wrap">
+        {articles.map((article: any, index: number) => (
+          <div key={article.id} className={`rounded overflow-hidden shadow-lgs m-5 ${isExpandedArray[index] ? 'w-3/4' : 'max-w-sm'}`}>
+            <Card
+              id={article.id}
+              title={article.attributes.title}
+              body={article.attributes.body}
+              image={article.attributes.header_image.data ? `http://localhost:1337${article.attributes.header_image.data[0].attributes.url}` : ""}
+              voiceId={selectedVoiceId}
+              isExpanded={isExpandedArray[index]}
+              setIsExpandedArray={() => handleExpandCard(index)}
+              index={index}
+            />
+          </div>
+        ))}
       </div>
+      <div style={{
+        height: 200
+      }}/>
     </div>
   );
 };
