@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 const token =
   "04678869830e558428de592832c540fbab0c703dfe4e53d5ec96dde2a7137b6c690f26d269bbd34b5c613fb0ae438047785386739026d949538ac5dc43d0c5f119ae7664ae691525e241e7e1272524289722047e2563a56081887ca00232546f446ffae9cb998ed257e8d0d9ce0c33c0b24c1281e8f022e26981298e874d2c4b";
-const article = () => {
+const Article = () => {
 
   const router = useRouter();
   const { id } = router.query;
@@ -68,4 +68,4 @@ const article = () => {
 
 }
 
-export default article;
+export default Article;
