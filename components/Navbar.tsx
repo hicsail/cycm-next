@@ -12,7 +12,7 @@ const Navbar = () => {
     },
     {
       name: "Our Feed",
-      href: "#",
+      href: "feed",
     },
     {
       name: "Contact Us",
