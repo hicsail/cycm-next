@@ -2,8 +2,8 @@ import Card from "@/components/Card";
 import React, { useEffect, useState } from "react";
 
 const token =
-  process.env.NEXT_PUBLIC_STRAPI_KEY;
-const apiKey = process.env.NEXT_PUBLIC_STRAPY_TOKEN;
+  process.env.NEXT_PUBLIC_STRAPY_TOKEN;
+const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
 
 const Content = () => {
   const [articles, setArticles] = useState([]);
@@ -56,7 +56,7 @@ const Content = () => {
 
   return (
     <div>
-      <div className="flex flex-column items-start justify-center mt-20">
+      <div className="flex flex-column items-start justify-center mt-40">
         <select id="countries" onChange={handleVoiceChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           {voices.map((voice: any) => (
             <option key={voice.voice_id} value={voice.voice_id}>
@@ -68,8 +68,8 @@ const Content = () => {
           }
         </select>
       </div>
-      <div className="flex flex-wrap">
-        {articles.map((article: any, index: number) => (
+      <div className="flex flex-wrap justify-center">
+        {articles && articles.length > 0 && articles.map((article: any, index: number) => (
           <div key={article.id} className={`rounded overflow-hidden shadow-lgs m-5 ${isExpandedArray[index] ? 'w-3/4' : 'max-w-sm'}`}>
             <Card
               id={article.id}
