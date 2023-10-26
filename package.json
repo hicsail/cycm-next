@@ -11,13 +11,17 @@
     "prettier:fix": "prettier -wl \"src/**/*.ts(x)\""
   },
   "dependencies": {
+    "@ionic/core": "^7.5.1",
+    "@ionic/react": "^7.5.1",
     "@types/node": "20.5.0",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
     "chart.js": "^4.3.3",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.13",
+    "ionicons": "^7.2.1",
     "next": "13.4.13",
+    "next-transpile-modules": "^10.0.1",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",

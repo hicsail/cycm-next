@@ -13,7 +13,7 @@ const Content = () => {
 
   useEffect(() => {
     // fetch from localhost:1337/api/articles
-    fetch("http://localhost:1337/api/articles?populate=*", {
+    fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/articles?populate=*`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +22,6 @@ const Content = () => {
     })
       .then((res) => res.json())
       .then((resp) => {
-        console.log(resp.data)
         setArticles(resp.data);
         setIsExpandedArray(new Array(resp.data.length).fill(false));
       });
@@ -75,7 +74,7 @@ const Content = () => {
               id={article.id}
               title={article.attributes.title}
               body={article.attributes.body}
-              image={article.attributes.header_image.data ? `http://localhost:1337${article.attributes.header_image.data[0].attributes.url}` : ""}
+              image={article.attributes.header_image.data ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${article.attributes.header_image.data[0].attributes.url}` : ""}
               voiceId={selectedVoiceId}
               isExpanded={isExpandedArray[index]}
               setIsExpandedArray={() => handleExpandCard(index)}
