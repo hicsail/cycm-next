@@ -3,6 +3,7 @@ import { AiFillPlayCircle, AiFillPauseCircle } from "react-icons/ai";
 import { FaExpand } from 'react-icons/fa';
 import { TbProgress } from 'react-icons/tb';
 import { useRouter } from 'next/router';
+import CardModal from './CardModal';
 
 interface CardProps {
   id: string;
@@ -28,7 +29,6 @@ const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded
   // set sentences
   useEffect(() => {
     setSentences(body.split('.'));
-    console.log(title);
   }, [body]);
 
   useEffect(() => {
@@ -160,6 +160,7 @@ const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded
             return newArray;
           });
         }} />
+        <CardModal title={title} sentences={sentences} id={id} voiceId={voiceId} />
       </div>
       <div className="absolute top-0 left-0 right-0 bg-transparent p-4 z-20">
         {

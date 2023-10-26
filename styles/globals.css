@@ -34,4 +34,9 @@ html {
   background-image: url('../public/cycm.jpg');
 }
 
+body.dark {
+  background: black;
+}
+
+
 
