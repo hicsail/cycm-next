@@ -1,14 +1,9 @@
 import Image from "next/image";
 import { Inter, Nunito } from "next/font/google";
 import Hero from "@/components/Hero";
-import Mission from "@/components/Mission";
-import Slider from "@/components/Slider";
-import Partners from "@/components/Partners";
-import Footer from "@/components/Footer";
-import CurrentState from "@/components/CurrentState";
-import Empower from "@/components/Empower";
 import ResourceCard from "@/components/ResourceCard";
 import Discover from "@/components/Discover";
+import DualColumnImageText from "@/components/DualColumnImageText";
 
 const inter = Inter({ subsets: ["latin"] });
 const nunito = Nunito({ subsets: ["latin"] });
@@ -74,11 +69,12 @@ export default function Home() {
   return (
     <main className={`${nunito.className}`}>
       <Hero heading="Empowering Teens with Mental Health Resources" />
-      <Empower
+      <DualColumnImageText
+        tagline="Empower"
         title="Supporting Teens Through Mental Health Awareness"
         description="Discover helpful resources and articles to promote mental health awareness and support for teens. Together, we can create a safe and nurturing environment for their well-being."
-        source=""
-        image="/cycm-empower.png"
+        image={{ source: "/cycm-empower.png", position: "right" }}
+        actions={[{ text: "Learn More", link: "" }]}
       />
       <div className="flex flex-col items-center my-16">
         <h5 className="text-center font-bold font-sans mb-12 max-w-7xl px-8 text-4xl md:px-12 md:text-5xl">
