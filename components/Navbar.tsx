@@ -8,7 +8,7 @@ const Navbar = () => {
   const navigation = [
     {
       name: "About Us",
-      href: "#",
+      href: "about",
     },
     {
       name: "Our Feed",
