@@ -1,44 +1,101 @@
 import Card from "@/components/Card";
 import React, { useEffect, useState } from "react";
+import { GetServerSideProps } from 'next';
 
 const token =
   process.env.NEXT_PUBLIC_STRAPY_TOKEN;
 const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
 
-const Content = () => {
-  const [articles, setArticles] = useState([]);
-  const [voices, setVoices] = useState([]);
-  const [selectedVoiceId, setSelectedVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
-  const [isExpandedArray, setIsExpandedArray] = useState<any>([]);
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    const articlesResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/articles?populate=*`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const articlesData = await articlesResponse.json();
 
-  useEffect(() => {
-    // fetch from localhost:1337/api/articles
-    fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/articles?populate=*`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((resp) => {
-        setArticles(resp.data);
-        setIsExpandedArray(new Array(resp.data.length).fill(false));
-      });
+    if (!apiKey) {
+      return {
+        props: {
+          articles: articlesData.data,
+          voices: [],
+        },
+      };
+    }
 
-    if (!apiKey) return;
-    fetch('https://api.elevenlabs.io/v1/voices', {
+    const voicesResponse = await fetch('https://api.elevenlabs.io/v1/voices', {
       method: 'GET',
       headers: {
         'accept': 'application/json',
         'xi-api-key': apiKey,
       },
-    })
-      .then((res) => res.json())
-      .then((resp) => {
-        setVoices(resp.voices);
-      });
-  }, []);
+    });
+    const voicesData = await voicesResponse.json();
+
+    return {
+      props: {
+        articles: articlesData.data,
+        voices: voicesData.voices,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      props: {
+        articles: [],
+        voices: [],
+      },
+    };
+  }
+};
+
+interface ContentProps {
+  articles: any[];
+  voices: any[];
+}
+
+const Content = ({articles, voices} : ContentProps) => {
+  console.log(articles);
+  console.log(voices);
+  const [selectedVoiceId, setSelectedVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
+  const [isExpandedArray, setIsExpandedArray] = useState<any>([]);
+
+  // useEffect(() => {
+  //   // fetch from localhost:1337/api/articles
+  //   fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/articles?populate=*`, {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((resp) => {
+  //       setArticles(resp.data);
+  //       setIsExpandedArray(new Array(resp.data.length).fill(false));
+  //     });
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!apiKey) return;
+  //   fetch('https://api.elevenlabs.io/v1/voices', {
+  //     method: 'GET',
+  //     headers: {
+  //       'accept': 'application/json',
+  //       'xi-api-key': apiKey,
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then((resp) => {
+  //       setVoices(resp.voices);
+  //     });
+  // }, []);
 
   const handleVoiceChange = (event: any) => {
     console.log(event.target.value)

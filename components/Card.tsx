@@ -4,6 +4,7 @@ import { FaExpand } from 'react-icons/fa';
 import { TbProgress } from 'react-icons/tb';
 import { useRouter } from 'next/router';
 import CardModal from './CardModal';
+import { GetServerSideProps } from 'next';
 
 interface CardProps {
   id: string;
@@ -15,6 +16,46 @@ interface CardProps {
   setIsExpandedArray: any;
   index: number
 }
+
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
+
+//   if (!apiKey) {
+//     throw new Error('ELEVEN_LABS_API_KEY is not defined');
+//   }
+
+//   try {
+//     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+//       method: 'POST',
+//       headers: {
+//         'accept': 'audio/mpeg',
+//         'xi-api-key': apiKey,
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify({
+//         "text": sentence,
+//         "model_id": "eleven_monolingual_v1",
+//         "voice_settings": {
+//           "stability": 0.5,
+//           "similarity_boost": 0.5
+//         }
+//       })
+//     });
+
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       console.error('Error response from server:', errorData);
+//       return null;
+//     }
+
+//     const blob = await response.blob();
+//     const url = URL.createObjectURL(blob);
+//     return new Audio(url);
+//   } catch (error) {
+//     console.error('Error occurred while making request:', error);
+//     return null;
+//   }
+// };
 
 const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded, setIsExpandedArray, index }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
