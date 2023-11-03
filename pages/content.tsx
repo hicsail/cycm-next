@@ -5,7 +5,10 @@ import { GetServerSideProps } from 'next';
 const token =
   process.env.NEXT_PUBLIC_STRAPY_TOKEN;
 const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
-
+const voiceIds = [
+  'D38z5RcWu1voky8WS1ja',
+  '21m00Tcm4TlvDq8ikWAM',
+];
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
     const articlesResponse = await fetch(
@@ -29,19 +32,22 @@ export const getServerSideProps: GetServerSideProps = async () => {
       };
     }
 
-    const voicesResponse = await fetch('https://api.elevenlabs.io/v1/voices', {
+    const voicesPromises = voiceIds.map((voiceId) =>
+    fetch(`https://api.elevenlabs.io/v1/voices/${voiceId}`, {
       method: 'GET',
       headers: {
         'accept': 'application/json',
         'xi-api-key': apiKey,
       },
-    });
-    const voicesData = await voicesResponse.json();
+    }).then((res) => res.json())
+  );
+
+  const voicesData = await Promise.all(voicesPromises);
 
     return {
       props: {
         articles: articlesData.data,
-        voices: voicesData.voices,
+        voices: voicesData,
       },
     };
   } catch (error) {
@@ -61,8 +67,7 @@ interface ContentProps {
 }
 
 const Content = ({articles, voices} : ContentProps) => {
-  console.log(articles);
-  console.log(voices);
+  
   const [selectedVoiceId, setSelectedVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
   const [isExpandedArray, setIsExpandedArray] = useState<any>([]);
 
@@ -98,7 +103,6 @@ const Content = ({articles, voices} : ContentProps) => {
   // }, []);
 
   const handleVoiceChange = (event: any) => {
-    console.log(event.target.value)
     setSelectedVoiceId(event.target.value);
   };
 
@@ -113,7 +117,7 @@ const Content = ({articles, voices} : ContentProps) => {
   return (
     <div>
       <div className="flex flex-column items-start justify-center mt-40">
-        <select id="countries" onChange={handleVoiceChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <select id="countries" value={selectedVoiceId} onChange={handleVoiceChange} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           {voices.map((voice: any) => (
             <option key={voice.voice_id} value={voice.voice_id}>
               {voice.name}
@@ -126,7 +130,7 @@ const Content = ({articles, voices} : ContentProps) => {
       </div>
       <div className="flex flex-wrap justify-center">
         {articles && articles.length > 0 && articles.map((article: any, index: number) => (
-          <div key={article.id} className={`rounded overflow-hidden shadow-lgs m-5 ${isExpandedArray[index] ? 'w-3/4' : 'max-w-sm'}`}>
+          <div key={article.id} className={`rounded overflow-hidden shadow-lgs m-5 ${isExpandedArray[index] ? 'w-3/4' : 'max-w-md'}`}>
             <Card
               id={article.id}
               title={article.attributes.title}
@@ -136,6 +140,7 @@ const Content = ({articles, voices} : ContentProps) => {
               isExpanded={isExpandedArray[index]}
               setIsExpandedArray={() => handleExpandCard(index)}
               index={index}
+              manual_id={article.attributes.manual_id}
             />
           </div>
         ))}
