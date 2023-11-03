@@ -14,6 +14,7 @@ interface CardProps {
   voiceId: string;
   isExpanded: boolean;
   setIsExpandedArray: any;
+  manual_id: string;
   index: number
 }
 
@@ -57,7 +58,7 @@ interface CardProps {
 //   }
 // };
 
-const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded, setIsExpandedArray, index }) => {
+const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded, setIsExpandedArray, index , manual_id}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sentences, setSentences] = useState<string[]>([]);
   const [audios, setAudios] = useState<HTMLAudioElement[]>([]);
@@ -90,37 +91,55 @@ const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded
     });
   }, [audios]);
 
-  const fetchAudio = async (sentence: string) => {
-    const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
+  // const fetchAudio = async (sentence: string) => {
+  //   const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
 
-    if (!apiKey) {
-      throw new Error('ELEVEN_LABS_API_KEY is not defined');
-    }
+  //   if (!apiKey) {
+  //     throw new Error('ELEVEN_LABS_API_KEY is not defined');
+  //   }
 
+  //   try {
+  //     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'accept': 'audio/mpeg',
+  //         'xi-api-key': apiKey,
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         "text": sentence,
+  //         "model_id": "eleven_monolingual_v1",
+  //         "voice_settings": {
+  //           "stability": 0.5,
+  //           "similarity_boost": 0.5
+  //         }
+  //       })
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       console.error('Error response from server:', errorData);
+  //       return null;
+  //     }
+
+  //     const blob = await response.blob();
+  //     const url = URL.createObjectURL(blob);
+  //     return new Audio(url);
+  //   } catch (error) {
+  //     console.error('Error occurred while making request:', error);
+  //     return null;
+  //   }
+  // };
+
+  const fetchAudio = async (sentence: string, index: number) => {
     try {
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
-        method: 'POST',
-        headers: {
-          'accept': 'audio/mpeg',
-          'xi-api-key': apiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "text": sentence,
-          "model_id": "eleven_monolingual_v1",
-          "voice_settings": {
-            "stability": 0.5,
-            "similarity_boost": 0.5
-          }
-        })
-      });
-
+      const response = await fetch(`https://cycm.s3.amazonaws.com/article_audios/article_${manual_id}/${voiceId}/audio_${index + 1}.mp3`);
+  
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.text();
         console.error('Error response from server:', errorData);
         return null;
       }
-
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       return new Audio(url);
@@ -137,8 +156,13 @@ const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded
     } else {
       setIsLoading(true);
       const fetchedAudios: (HTMLAudioElement | null)[] = [];
+      let i=0;
       for (const sentence of sentences) {
-        const audio = await fetchAudio(sentence);
+        //const audio = await fetchAudio(sentence);
+        if (sentence.length === 0) {
+          continue;
+        }
+        const audio = await fetchAudio(sentence, i++);
         if (audio) {
           fetchedAudios.push(audio);
         }
@@ -201,7 +225,7 @@ const Card: React.FC<CardProps> = ({ id, title, body, image, voiceId, isExpanded
             return newArray;
           });
         }} />
-        <CardModal title={title} sentences={sentences} id={id} voiceId={voiceId} />
+        <CardModal title={title} sentences={sentences} id={id} voiceId={voiceId} manual_id={manual_id} />
       </div>
       <div className="absolute top-0 left-0 right-0 bg-transparent p-4 z-20">
         {

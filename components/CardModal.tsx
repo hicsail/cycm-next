@@ -22,9 +22,10 @@ interface Props {
   sentences: string[];
   id: string;
   voiceId: string;
+  manual_id: string;
 }
 
-const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId }) => {
+const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }) => {
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const modal = useRef<any>(null);
@@ -34,38 +35,57 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId }) => {
   const containerRef = useRef(null);
   const [audioLoading, setAudioLoading] = useState<boolean>(false);
 
-  const fetchAudio = async (sentence: string) => {
-    // ... existing fetchAudio code ...
-    const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
+  // const fetchAudio = async (sentence: string) => {
+  //   // ... existing fetchAudio code ...
+  //   const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
 
-    if (!apiKey) {
-      throw new Error('ELEVEN_LABS_API_KEY is not defined');
-    }
+  //   if (!apiKey) {
+  //     throw new Error('ELEVEN_LABS_API_KEY is not defined');
+  //   }
 
+  //   try {
+  //     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'accept': 'audio/mpeg',
+  //         'xi-api-key': apiKey,
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify({
+  //         "text": sentence,
+  //         "model_id": "eleven_monolingual_v1",
+  //         "voice_settings": {
+  //           "stability": 0.5,
+  //           "similarity_boost": 0.5
+  //         }
+  //       })
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       console.error('Error response from server:', errorData);
+  //       return null;
+  //     }
+
+  //     const blob = await response.blob();
+  //     const url = URL.createObjectURL(blob);
+  //     return new Audio(url);
+  //   } catch (error) {
+  //     console.error('Error occurred while making request:', error);
+  //     return null;
+  //   }
+  // };
+
+  const fetchAudio = async (index: number) => {
     try {
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
-        method: 'POST',
-        headers: {
-          'accept': 'audio/mpeg',
-          'xi-api-key': apiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "text": sentence,
-          "model_id": "eleven_monolingual_v1",
-          "voice_settings": {
-            "stability": 0.5,
-            "similarity_boost": 0.5
-          }
-        })
-      });
-
+      const response = await fetch(`https://cycm.s3.amazonaws.com/article_audios/article_${manual_id}/${voiceId}/audio_${index + 1}.mp3`);
+  
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.text();
         console.error('Error response from server:', errorData);
         return null;
       }
-
+  
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       return new Audio(url);
@@ -83,8 +103,9 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId }) => {
     const fetchAudios = async () => {
       const fetchedAudios: (HTMLAudioElement | null)[] = [];
       setAudioLoading(true);
-      for (const sentence of sentences) {
-        const audio : any = await fetchAudio(sentence);
+      for (let i = 0; i < sentences.length; i++) {
+        if (sentences[i].length === 0) continue;
+        const audio : any = await fetchAudio(i);
         if (audio) {
           fetchedAudios.push(audio);
         }
