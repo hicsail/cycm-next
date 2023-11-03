@@ -34,6 +34,7 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
   const [isPlaying, setIsPlaying] = useState(false);
   const containerRef = useRef(null);
   const [audioLoading, setAudioLoading] = useState<boolean>(false);
+  const [hasFetchedAudios, setHasFetchedAudios] = useState(false);
 
   // const fetchAudio = async (sentence: string) => {
   //   // ... existing fetchAudio code ...
@@ -44,22 +45,7 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
   //   }
 
   //   try {
-  //     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'accept': 'audio/mpeg',
-  //         'xi-api-key': apiKey,
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({
-  //         "text": sentence,
-  //         "model_id": "eleven_monolingual_v1",
-  //         "voice_settings": {
-  //           "stability": 0.5,
-  //           "similarity_boost": 0.5
-  //         }
-  //       })
-  //     });
+  //     const response = await fetch(`https://cycm.s3.amazonaws.com/article_audios/article_${manual_id}/${voiceId}/audio_${index + 1}.mp3`);
 
   //     if (!response.ok) {
   //       const errorData = await response.json();
@@ -79,13 +65,13 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
   const fetchAudio = async (index: number) => {
     try {
       const response = await fetch(`https://cycm.s3.amazonaws.com/article_audios/article_${manual_id}/${voiceId}/audio_${index + 1}.mp3`);
-  
+
       if (!response.ok) {
         const errorData = await response.text();
         console.error('Error response from server:', errorData);
         return null;
       }
-  
+
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       return new Audio(url);
@@ -94,10 +80,10 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
       return null;
     }
   };
-  
+
   // Create a new state variable to store the audio streams
   const [audios, setAudios] = useState<HTMLAudioElement[]>([]);
-  
+
   // Fetch the audio streams when the sentences prop changes
   useEffect(() => {
     const fetchAudios = async () => {
@@ -105,18 +91,34 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
       setAudioLoading(true);
       for (let i = 0; i < sentences.length; i++) {
         if (sentences[i].length === 0) continue;
-        const audio : any = await fetchAudio(i);
+        const audio: any = await fetchAudio(i);
         if (audio) {
           fetchedAudios.push(audio);
         }
       }
       setAudioLoading(false);
       setAudios(fetchedAudios as HTMLAudioElement[]);
+      setHasFetchedAudios(true);
     };
-    if (isPlaying) fetchAudios();
+    if (isPlaying && !hasFetchedAudios) fetchAudios();
   }, [sentences, isPlaying]);
-  
+
   // Modify the useEffect hook that handles the isPlaying state variable
+  // useEffect(() => {
+  //   if (isPlaying && currentIndex < sentences.length) {
+  //     const currentAudio = audios[currentIndex];
+  //     if (currentAudio && isPlaying) {
+  //       currentAudio.onended = () => {
+  //         setCurrentIndex(prevIndex => prevIndex + 1);
+  //       };
+  //       currentAudio.play();
+  //     }
+
+  //   } else if (currentIndex === sentences.length) {
+  //     setIsPlaying(false); // Set isPlaying to false when the last sentence has been played
+  //   }
+  // }, [isPlaying, currentIndex, sentences.length, audios]);
+
   useEffect(() => {
     if (isPlaying && currentIndex < sentences.length) {
       const currentAudio = audios[currentIndex];
@@ -128,6 +130,11 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
       }
     } else if (currentIndex === sentences.length) {
       setIsPlaying(false); // Set isPlaying to false when the last sentence has been played
+    } else if (!isPlaying && currentIndex < sentences.length) {
+      const currentAudio = audios[currentIndex];
+      if (currentAudio) {
+        currentAudio.pause();
+      }
     }
   }, [isPlaying, currentIndex, sentences.length, audios]);
 
@@ -171,13 +178,27 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
   return (
     <>
       <IonButton id={`${id}open-modal`} expand="block" fill='outline'>
-        Open
+        Open Fullscreen
       </IonButton>
       <IonModal keepContentsMounted={true} ref={modal} trigger={`${id}open-modal`} color={'dark'}>
         <IonHeader translucent={true}>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonButton onClick={() => modal.current?.dismiss()}>
+              <IonButton onClick={() => {
+
+                if (currentIndex < audios.length) {
+                  const currentAudio = audios[currentIndex];
+                  if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0; // Reset audio to start
+                  }
+                }
+                setCurrentIndex(0);
+                setIsPlaying(false);
+                setHasFetchedAudios(false);
+                setAudios([]);
+                modal.current?.dismiss()
+              }}>
                 <IonIcon icon={closeCircle} ></IonIcon>
               </IonButton>
             </IonButtons>
@@ -193,7 +214,7 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
           <div ref={containerRef} style={{
             maxHeight: '100vh',
           }}>
-            {sentences.map((sentence,index) => (
+            {sentences.map((sentence, index) => (
               <IonText className={index == currentIndex ? 'highlight' : ''} color={index <= currentIndex ? "success" : "medium"} key={index}>
                 <h3>{sentence}</h3>
               </IonText>
@@ -201,14 +222,13 @@ const CardModal: React.FC<Props> = ({ title, sentences, id, voiceId, manual_id }
           </div>
         </IonContent>
         <IonFab horizontal='end' vertical='bottom'>
-            <IonFabButton onClick={() => {
-              console.log('hit', isPlaying);
-              setIsPlaying(prev => !prev)
-            }}>
-              {audioLoading ? <IonSpinner name="crescent" /> :
+          <IonFabButton onClick={() => {
+            setIsPlaying(prev => !prev)
+          }}>
+            {audioLoading ? <IonSpinner name="crescent" /> :
               <IonIcon icon={isPlaying ? pauseCircle : playCircle}></IonIcon>}
-            </IonFabButton>
-          </IonFab>
+          </IonFabButton>
+        </IonFab>
       </IonModal>
     </>
   )
