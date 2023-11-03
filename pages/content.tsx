@@ -5,9 +5,14 @@ import { GetServerSideProps } from 'next';
 const token =
   process.env.NEXT_PUBLIC_STRAPY_TOKEN;
 const apiKey = process.env.NEXT_PUBLIC_ELEVEN_LABS_API_KEY;
-
+const voiceIds = [
+  'D38z5RcWu1voky8WS1ja',
+  '21m00Tcm4TlvDq8ikWAM',
+  'EXAVITQu4vr4xnSDxMaL',
+];
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
+    console.log(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/articles?populate=*`);
     const articlesResponse = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/articles?populate=*`,
       {
@@ -19,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       }
     );
     const articlesData = await articlesResponse.json();
-
+    console.log(articlesData);
     if (!apiKey) {
       return {
         props: {
@@ -29,19 +34,31 @@ export const getServerSideProps: GetServerSideProps = async () => {
       };
     }
 
-    const voicesResponse = await fetch('https://api.elevenlabs.io/v1/voices', {
+    // const voicesResponse = await fetch('https://api.elevenlabs.io/v1/voices', {
+    //   method: 'GET',
+    //   headers: {
+    //     'accept': 'application/json',
+    //     'xi-api-key': apiKey,
+    //   },
+    // });
+    // const voicesData = await voicesResponse.json();
+
+    const voicesPromises = voiceIds.map((voiceId) =>
+    fetch(`https://api.elevenlabs.io/v1/voices/${voiceId}`, {
       method: 'GET',
       headers: {
         'accept': 'application/json',
         'xi-api-key': apiKey,
       },
-    });
-    const voicesData = await voicesResponse.json();
+    }).then((res) => res.json())
+  );
+
+  const voicesData = await Promise.all(voicesPromises);
 
     return {
       props: {
         articles: articlesData.data,
-        voices: voicesData.voices,
+        voices: voicesData,
       },
     };
   } catch (error) {
@@ -61,7 +78,6 @@ interface ContentProps {
 }
 
 const Content = ({articles, voices} : ContentProps) => {
-  console.log(articles);
   console.log(voices);
   const [selectedVoiceId, setSelectedVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
   const [isExpandedArray, setIsExpandedArray] = useState<any>([]);
@@ -134,6 +150,7 @@ const Content = ({articles, voices} : ContentProps) => {
               image={article.attributes.header_image.data ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${article.attributes.header_image.data[0].attributes.url}` : ""}
               voiceId={selectedVoiceId}
               isExpanded={isExpandedArray[index]}
+              manual_id={article.attributes.manual_id}
               setIsExpandedArray={() => handleExpandCard(index)}
               index={index}
             />
